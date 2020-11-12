@@ -4,11 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.quarkus.qe</groupId>
-        <artifactId>quarkus-catalog-apps</artifactId>
+        <groupId>io.quarkus.qe.catalog-apps</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>enricher</artifactId>
+    <name>Quarkus Apps Catalog: Enricher</name>
 
 </project>
