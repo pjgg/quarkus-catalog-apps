@@ -1,6 +1,17 @@
+
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+
 charts:
   - name: local
-    namespace: catalog-app-api
+    namespace: pablo-test
     chart: ../../charts/catalog-rest-api/
     values:
       - values.yaml # Values file (relative path to manifest)
+  - name: local-postgres
+    namespace: pablo-test
+    chart: bitnami/postgresql
+    version: 9.1.1
+    values:
+      - postgres.yaml
