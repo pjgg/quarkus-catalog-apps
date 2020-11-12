@@ -5,7 +5,7 @@ repositories:
 
 charts:
   - name: local
-    namespace: pablo-test
+    namespace: local-catalog-app-api
     chart: ../../charts/catalog-rest-api/
     values:
       - values.yaml # Values file (relative path to manifest)
@@ -15,3 +15,8 @@ charts:
     version: 9.1.1
     values:
       - postgres.yaml
+  - name: local-kafka
+    namespace: pablo-test
+    chart: bitnami/kafka
+    values:
+      - kafka.yaml
