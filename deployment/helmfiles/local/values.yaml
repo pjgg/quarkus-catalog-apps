@@ -1,0 +1,6 @@
+# Dev specific overrides
+nameOverride: catalog-rest-api
+image:
+  repository: pjgg/code-with-quarkus
+  tag: d5f0735
+  pullPolicy: IfNotPresent
