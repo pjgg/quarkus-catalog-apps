@@ -13,13 +13,14 @@
     ```
   * [oc](https://docs.openshift.com/enterprise/3.2/cli_reference/manage_cli_profiles.html#manually-configuring-cli-profiles) / kubectl Cli
 
+
 ## Helm
 
 Move on to your helmfile environment, for example local and then apply your changes:
 > cd /helmfiles/local
 >
 > helmfile -f helmfile.yaml apply/sync
->
+
 
 ### Folder Structure
 ```
