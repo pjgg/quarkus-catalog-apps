@@ -9,6 +9,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -34,6 +36,15 @@ public class RepositoryResource {
         } catch (RepositoryNotFoundException e) {
             return Response.status(Status.NOT_FOUND).build();
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/")
+    public Response getAll(@QueryParam("page") @DefaultValue("0") int pageIndex, @QueryParam("size") @DefaultValue("20") int size) {
+        var allRepositories = repositoryService.findAll(pageIndex, size);
+        return allRepositories.isEmpty() ? Response.status(Status.NO_CONTENT).build()
+                : Response.ok(allRepositories).build();
     }
 
     @POST

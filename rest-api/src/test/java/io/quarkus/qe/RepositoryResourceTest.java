@@ -2,8 +2,10 @@ package io.quarkus.qe;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
+import java.util.Random;
 
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -33,7 +35,11 @@ public class RepositoryResourceTest {
 
     private static final String PATH = "/repository";
     private static final String REPO_URL = "http://github.com/user/repo.git";
+    private static final String REPO_URL_1 = "http://github.com/user/repo1.git";
+    private static final String REPO_URL_2 = "http://github.com/user/repo2.git";
     private static final long AN_ENTITY_ID = 100;
+    private static final int EXPECTED_ALL_REPOS_AMOUNT = 3;
+
 
     @Inject
     @Any
@@ -84,6 +90,16 @@ public class RepositoryResourceTest {
     }
 
     @Test
+    public void shouldGetAllRepository() {
+        givenExistingRepository(REPO_URL);
+        givenExistingRepository(REPO_URL_1);
+        givenExistingRepository(REPO_URL_2);
+        whenGetAllRepositories(0, EXPECTED_ALL_REPOS_AMOUNT);
+        thenResponseIsOk();
+        thenResponseObjectsAmountIs(EXPECTED_ALL_REPOS_AMOUNT);
+    }
+
+    @Test
     public void shouldReturnNotFoundWhenEntityDoesNotExist() {
         whenGetRepository();
         thenResponseIsNotFound();
@@ -99,14 +115,18 @@ public class RepositoryResourceTest {
     }
 
     private void whenAddNewRepository() {
-        response = given().contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-                .and().body(repository)
-                .when().post(PATH);
+        response = given().contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).and()
+                .body(repository).when().post(PATH);
     }
 
     private void whenGetRepository() {
         long entityId = Optional.ofNullable(entity).map(e -> e.id).orElse(AN_ENTITY_ID);
         response = given().accept(MediaType.APPLICATION_JSON).when().get(PATH + "/" + entityId);
+    }
+
+    private void whenGetAllRepositories(int from, int to) {
+        var queryParams = String.format("?page=%d&size=%d", from, to);
+        response = given().accept(MediaType.APPLICATION_JSON).when().get(PATH + queryParams);
     }
 
     private void thenNewRepositoryRequestIsSent() {
@@ -131,5 +151,9 @@ public class RepositoryResourceTest {
 
     private void thenResponseIsConflict() {
         response.then().statusCode(HttpStatus.SC_CONFLICT);
+    }
+
+    private void thenResponseObjectsAmountIs(int expectedAmount) {
+        assertTrue(response.as(Repository[].class).length == expectedAmount);
     }
 }
