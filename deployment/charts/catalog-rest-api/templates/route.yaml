@@ -1,0 +1,11 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  to:
+    kind: Service
+    name: {{ template "fullname" . }}
+    weight: 100
+  port:
+    targetPort: {{ .Values.service.internalPort }}
