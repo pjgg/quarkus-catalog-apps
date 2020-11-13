@@ -1,6 +1,16 @@
 charts:
   - name: dev-catalog-rest-api
-    namespace: dev-catalog-app-api
+    namespace: dev-catalog-app
     chart: ../../charts/catalog-rest-api/
     values:
-      - ../../values/dev/catalog-rest-api/values.yaml # Values file (relative path to manifest)
+      - ../../values/dev/catalog-rest-api/values.yaml
+  - name: dev-catalog-storage-service
+    namespace: dev-catalog-app
+    chart: ../../charts/catalog-storage-service/
+    values:
+      - ../../values/dev/catalog-rest-api/values.yaml
+  - name: dev-catalog-enricher-service
+    namespace: dev-catalog-app
+    chart: ../../charts/catalog-enricher-service/
+    values:
+      - ../../values/dev/catalog-enricher-service/values.yaml

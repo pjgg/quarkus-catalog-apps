@@ -27,15 +27,15 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
           env:
             - name: QUARKUS_DATASOURCE_JDBC_URL
-              value: {{ .Values.database.url }}
+              value: jdbc:postgresql://quarkusappcatalog.postgresql-qe-infra:5432/quarkusappcatalog
             - name: QUARKUS_DATASOURCE_USERNAME
-              value: {{ .Values.database.user }}
+              value: root
             - name: QUARKUS_DATASOURCE_PASSWORD
-              value: {{ .Values.database.pwd }}
+              value: EWQNNZC
             - name: QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT-SCHEMA
-              value: {{ .Values.database.schema }}
+              value: quarkusappcatalog
             - name: KAFKA_BOOTSTRAP_SERVERS
-              value: {{ .Values.kafka.bootstrap }}
+              value: 'kafka-qe-kafka-bootstrap.kafka-qe-infra:9092'
           livenessProbe:
             httpGet:
               path: /health/live
