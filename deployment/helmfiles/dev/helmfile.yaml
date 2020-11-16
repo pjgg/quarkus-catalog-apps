@@ -1,3 +1,7 @@
+repositories:
+  - name: bitnami
+    url: https://charts.bitnami.com/bitnami
+
 charts:
   - name: dev-catalog-rest-api
     namespace: dev-catalog-app

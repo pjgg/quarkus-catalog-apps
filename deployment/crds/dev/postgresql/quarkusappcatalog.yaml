@@ -1,0 +1,19 @@
+apiVersion: postgresql.dev4devs.com/v1alpha1
+kind: Database
+metadata:
+  name: dev-quarkusappcatalog
+  namespace: postgresql-qe-infra
+spec:
+  databaseCpu: 30m
+  databaseCpuLimit: 60m
+  databaseMemoryLimit: 512Mi
+  databaseMemoryRequest: 128Mi
+  databaseName: quarkusappcatalog
+  databaseNameKeyEnvVar: POSTGRESQL_DATABASE
+  databasePassword: EWQNNZC
+  databasePasswordKeyEnvVar: POSTGRESQL_PASSWORD
+  databaseStorageRequest: 1Gi
+  databaseUser: root
+  databaseUserKeyEnvVar: POSTGRESQL_USER
+  image: centos/postgresql-96-centos7
+  size: 1

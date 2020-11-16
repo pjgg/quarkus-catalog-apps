@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "name" . }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -27,15 +27,15 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
           env:
             - name: QUARKUS_DATASOURCE_JDBC_URL
-              value: jdbc:postgresql://quarkusappcatalog.postgresql-qe-infra:5432/quarkusappcatalog
+              value: {{ .Values.database.url }}
             - name: QUARKUS_DATASOURCE_USERNAME
-              value: root
+              value: {{ .Values.database.user }}
             - name: QUARKUS_DATASOURCE_PASSWORD
-              value: EWQNNZC
+              value: {{ .Values.database.pwd }}
             - name: QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT-SCHEMA
-              value: quarkusappcatalog
+              value: {{ .Values.database.schema }}
             - name: KAFKA_BOOTSTRAP_SERVERS
-              value: 'kafka-qe-kafka-bootstrap.kafka-qe-infra:9092'
+              value: {{ .Values.kafka.bootstrap }}
           livenessProbe:
             httpGet:
               path: /health/live
@@ -49,4 +49,4 @@ spec:
   {{- if .Values.nodeSelector }}
 nodeSelector:
   {{ toYaml .Values.nodeSelector | indent 8 }}
-  {{- end }}
+    {{- end }}

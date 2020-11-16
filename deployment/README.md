@@ -21,18 +21,51 @@ Move on to your helmfile environment, for example local and then apply your chan
 >
 > helmfile -f helmfile.yaml apply/sync
 
+## Crds 
+
+Currently, there is [not possible](https://github.com/roboll/helmfile/issues/1353) to install custom resource definition objects by a helmfile. So in order to install postgresql and kafka cluster we are running the following command:
+
+ > oc create -f yourResourcedefinition.yaml
+ >
+
+This project requires the following operators installed:
+* [Postgresql Operator](https://operatorhub.io/operator/postgresql-operator-dev4devs-com)
+* [Kafka Strimzi Operator](https://strimzi.io/)
 
 ### Folder Structure
 ```
 .
 ├── charts
-│   └── catalog-rest-api
+│   ├── catalog-enricher-service
+│   │   ├── Chart.yaml
+│   │   ├── templates
+│   │   │   ├── deployment.yaml
+│   │   │   ├── _helpers.tpl
+│   │   │   └── service.yaml
+│   │   └── values.yaml
+│   ├── catalog-rest-api
+│   │   ├── Chart.yaml
+│   │   ├── templates
+│   │   │   ├── deployment.yaml
+│   │   │   ├── _helpers.tpl
+│   │   │   ├── route.yaml
+│   │   │   └── service.yaml
+│   │   └── values.yaml
+│   └── catalog-storage-service
 │       ├── Chart.yaml
 │       ├── templates
 │       │   ├── deployment.yaml
 │       │   ├── _helpers.tpl
 │       │   └── service.yaml
 │       └── values.yaml
+├── crds
+│   ├── dev
+│   │   └── postgresql
+│   │       └── quarkusappcatalog.yaml
+│   ├── local
+│   └── prod
+├── docker
+│   └── docker-compose.yaml
 ├── helmfiles
 │   ├── dev
 │   │   └── helmfile.yaml
@@ -43,13 +76,20 @@ Move on to your helmfile environment, for example local and then apply your chan
 ├── README.md
 └── values
     ├── dev
-    │   └── catalog-rest-api
+    │   ├── catalog-enricher-service
+    │   │   └── values.yaml
+    │   ├── catalog-rest-api
+    │   │   └── values.yaml
+    │   └── catalog-storage-service
     │       └── values.yaml
     └── replica-values.yaml
+
 ```
 **Chart:** a collection of k8s templates and default values that applies to those templates. Doesn't talk about environment specific values.
 
 **helmfiles:** Is a declarative spec for deploying helm charts. Here you have environment specific values. A helmfile could deploy more than one chart, 
 and also DBs, brokers, secrets etc...everything that is required in order to make your service running must be defined in these helmfiles. 
 
-**values:** these values overwrite default template values, and are environment specific.   
+**values:** these values overwrite default template values, and are environment specific.
+
+**crds** custom resource definition object. According [helm folder structure definition](https://helm.sh/docs/topics/charts/) should be located at the same level of chart folder. However, due to an [issue](https://github.com/roboll/helmfile/issues/1353) we decided to move on this folder out of this structure.  

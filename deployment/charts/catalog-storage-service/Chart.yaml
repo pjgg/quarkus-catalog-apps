@@ -1,4 +1,4 @@
 apiVersion: v1
 description: Catalog Storage Service
 name: catalog-storage-service
-version: 0.0.1
+version: 0.0.2

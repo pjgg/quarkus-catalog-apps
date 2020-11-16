@@ -13,9 +13,9 @@ service:
   externalPort: 8082
   internalPort: 8082
 database:
-  url: jdbc:postgresql://quarkusappcatalog.postgresql-qe-infra:5432/quarkusappcatalog
+  url: jdbc:postgresql://dev-quarkusappcatalog.postgresql-qe-infra:5432/quarkusappcatalog
   user: root
   pwd: EWQNNZC
   schema: quarkusappcatalog
 kafka:
-  bootstrap: kafka-qe-kafka-bootstrap.kafka-qe-infra:9092
+  bootstrap: dev-kafka-qe-kafka-bootstrap.kafka-qe-infra:9092
