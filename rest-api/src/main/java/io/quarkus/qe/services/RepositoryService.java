@@ -38,10 +38,10 @@ public class RepositoryService {
     }
 
     public List<Repository> findAll(final int pageIndex, final int size) {
-        return RepositoryEntity.findAll()
+        return RepositoryEntity.<RepositoryEntity> findAll()
                 .page(pageIndex, size)
                 .stream()
-                .map(entity -> repositoryMarshaller.fromEntity((RepositoryEntity)entity))
+                .map(repositoryMarshaller::fromEntity)
                 .collect(Collectors.toList());
     }
 
