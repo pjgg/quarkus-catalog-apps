@@ -2,9 +2,6 @@ package io.quarkus.qe.services;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import io.quarkus.qe.configuration.Channels;
