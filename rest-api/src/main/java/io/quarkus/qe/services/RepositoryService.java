@@ -41,7 +41,7 @@ public class RepositoryService {
         return RepositoryEntity.findAll()
                 .page(pageIndex, size)
                 .stream()
-                .map(entity -> repositoryMarshaller.fromEntity((RepositoryEntity)entity))
+                .map(entity -> repositoryMarshaller.fromEntity((RepositoryEntity) entity))
                 .collect(Collectors.toList());
     }
 

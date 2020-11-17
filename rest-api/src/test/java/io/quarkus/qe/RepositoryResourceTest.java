@@ -40,7 +40,6 @@ public class RepositoryResourceTest {
     private static final long AN_ENTITY_ID = 100;
     private static final int EXPECTED_ALL_REPOS_AMOUNT = 3;
 
-
     @Inject
     @Any
     InMemoryConnector connector;

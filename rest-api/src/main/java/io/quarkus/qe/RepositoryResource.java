@@ -41,7 +41,8 @@ public class RepositoryResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/")
-    public Response getAll(@QueryParam("page") @DefaultValue("0") int pageIndex, @QueryParam("size") @DefaultValue("20") int size) {
+    public Response getAll(@QueryParam("page") @DefaultValue("0") int pageIndex,
+            @QueryParam("size") @DefaultValue("20") int size) {
         var allRepositories = repositoryService.findAll(pageIndex, size);
         return allRepositories.isEmpty() ? Response.status(Status.NO_CONTENT).build()
                 : Response.ok(allRepositories).build();
