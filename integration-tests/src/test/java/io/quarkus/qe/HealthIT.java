@@ -1,0 +1,24 @@
+package io.quarkus.qe;
+
+import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.Test;
+
+public class HealthIT extends BaseIT {
+
+    private static final String HEALTH_PATH = "/health";
+
+    @Test
+    public void storageServiceHealthEndpointShouldBeOk() {
+        givenStorageService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void restApiHealthEndpointShouldBeOk() {
+        givenRestApiService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void enricherServiceHealthEndpointShouldBeOk() {
+        givenEnrichService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK);
+    }
+}
