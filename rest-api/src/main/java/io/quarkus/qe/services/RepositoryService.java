@@ -28,7 +28,7 @@ public class RepositoryService {
     public Repository findById(Long id) throws RepositoryNotFoundException {
         RepositoryEntity entity = RepositoryEntity.findById(id);
         if (entity == null) {
-            throw new RepositoryNotFoundException();
+            throw new RepositoryNotFoundException(String.format("Repository ID %d not exist.", id));
         }
 
         return repositoryMarshaller.fromEntity(entity);
@@ -44,7 +44,7 @@ public class RepositoryService {
 
     public void sendNewRepositoryRequest(Repository request) throws RepositoryAlreadyExistsException {
         if (RepositoryEntity.find("repoUrl", request.getRepoUrl()).count() > 0) {
-            throw new RepositoryAlreadyExistsException();
+            throw new RepositoryAlreadyExistsException(String.format("Repository %s already exist.", request.getRepoUrl()));
         }
 
         newRepositoryRequestEmitter.send(new NewRepositoryRequest(request.getRepoUrl()));

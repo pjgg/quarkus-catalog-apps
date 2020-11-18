@@ -10,6 +10,9 @@ import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import io.quarkus.qe.exceptions.CatalogError;
+import io.quarkus.qe.exceptions.RepositoryAlreadyExistsException;
+import io.quarkus.qe.exceptions.RepositoryNotFoundException;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,12 +35,14 @@ import io.smallrye.reactive.messaging.connectors.InMemorySink;
 @QuarkusTestResource(H2DatabaseTestResource.class)
 public class RepositoryResourceTest {
 
+    private static final long AN_ENTITY_ID = 100;
+    private static final int EXPECTED_ALL_REPOS_AMOUNT = 3;
     private static final String PATH = "/repository";
     private static final String REPO_URL = "http://github.com/user/repo.git";
     private static final String REPO_URL_1 = "http://github.com/user/repo1.git";
     private static final String REPO_URL_2 = "http://github.com/user/repo2.git";
-    private static final long AN_ENTITY_ID = 100;
-    private static final int EXPECTED_ALL_REPOS_AMOUNT = 3;
+    private static final String EXPECTED_CONFLICT_ERROR_MSG = "Repository " + REPO_URL + " already exist.";
+    private static final String EXPECTED_NOT_FOUND_ERROR_MSG = "Repository ID " + AN_ENTITY_ID + " not exist.";
 
     @Inject
     @Any
@@ -78,6 +83,8 @@ public class RepositoryResourceTest {
         givenNewRepositoryRequest(REPO_URL);
         whenAddNewRepository();
         thenResponseIsConflict();
+        thenResponseErrorCodeIs(RepositoryAlreadyExistsException.uniqueServiceErrorId);
+        thenResponseErrorMessageIs(EXPECTED_CONFLICT_ERROR_MSG);
     }
 
     @Test
@@ -101,6 +108,8 @@ public class RepositoryResourceTest {
     public void shouldReturnNotFoundWhenEntityDoesNotExist() {
         whenGetRepository();
         thenResponseIsNotFound();
+        thenResponseErrorCodeIs(RepositoryNotFoundException.uniqueServiceErrorId);
+        thenResponseErrorMessageIs(EXPECTED_NOT_FOUND_ERROR_MSG);
     }
 
     private void givenExistingRepository(String repoUrl) {
@@ -153,5 +162,13 @@ public class RepositoryResourceTest {
 
     private void thenResponseObjectsAmountIs(int expectedAmount) {
         assertTrue(response.as(Repository[].class).length == expectedAmount);
+    }
+
+    private void thenResponseErrorCodeIs(int expectedCode) {
+        assertTrue(response.as(CatalogError.class).getCode() == expectedCode);
+    }
+
+    private void thenResponseErrorMessageIs(String expectedMsg) {
+        assertTrue(response.as(CatalogError.class).getMsg().equalsIgnoreCase(expectedMsg));
     }
 }

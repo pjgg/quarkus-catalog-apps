@@ -74,6 +74,11 @@ Now, you should see this log in the storage service:
 (vert.x-worker-thread-0) New repository 'http://github.com/user/repo' with ID 1
 ```
 
+- Swagger-UI
+```
+http://localhost:8081/swagger-ui/
+```
+
 - Get the repo details
 
 ```
