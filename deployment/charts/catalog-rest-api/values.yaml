@@ -2,20 +2,28 @@
 # Default values for paths-example.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 1
-image:
-  repository: quay.io/jcarvaja/quarkus-apps-catalog-rest-api
-  tag: 1.0.1-SNAPSHOT
-  pullPolicy: Always
-service:
-  name: catalog-rest-api
-  type: ClusterIP
-  externalPort: 8081
-  internalPort: 8081
-database:
-  url: jdbc:postgresql://dev-quarkusappcatalog.postgresql-qe-infra:5432/quarkusappcatalog
-  user: root
-  pwd: EWQNNZC
-  schema: quarkusappcatalog
-kafka:
-  bootstrap: dev-kafka-qe-kafka-bootstrap.kafka-qe-infra:9092
+qe-quarkus-app:
+  replicaCount: 1
+  deployment:
+    name: catalog-rest-api
+    image:
+      repository: quay.io/jcarvaja/quarkus-apps-catalog-rest-api
+      tag: 1.0.1-SNAPSHOT
+      pullPolicy: Always
+    env:
+      - name: QUARKUS_DATASOURCE_JDBC_URL
+        value: jdbc:postgresql://dev-quarkusappcatalog.postgresql-qe-infra:5432/quarkusappcatalog
+      - name: QUARKUS_DATASOURCE_USERNAME
+        value: root
+      - name: QUARKUS_DATASOURCE_PASSWORD
+        value: root
+      - name: QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT-SCHEMA
+        value: quarkusappcatalog
+      - name: KAFKA_BOOTSTRAP_SERVERS
+        value: dev-kafka-qe-kafka-bootstrap.kafka-qe-infra:9092
+  service:
+    public: "true"
+    name: catalog-rest-api
+    type: ClusterIP
+    externalPort: 8081
+    internalPort: 8081

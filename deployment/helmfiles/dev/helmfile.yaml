@@ -1,6 +1,8 @@
 repositories:
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
+  - name: common
+    url: https://pjgg.github.io/helm-charts-parent/
 
 charts:
   - name: dev-catalog-rest-api
@@ -18,3 +20,4 @@ charts:
     chart: ../../charts/catalog-enricher-service/
     values:
       - ../../values/dev/catalog-enricher-service/values.yaml
+
