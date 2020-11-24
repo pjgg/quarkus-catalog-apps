@@ -5,4 +5,4 @@ version: 0.0.1
 dependencies:
 - name: qe-quarkus-app
   version: 0.0.1
-  repository: https://pjgg.github.io/helm-charts-parent
+  repository: http://quarkus-qe.github.io/helm-charts-parent
