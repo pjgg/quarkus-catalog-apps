@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 
 public class Repository {
+    public transient static final String UNDEFINED_VALUE = "N/A";
     private Long id;
     @NotEmpty
     private String repoUrl;

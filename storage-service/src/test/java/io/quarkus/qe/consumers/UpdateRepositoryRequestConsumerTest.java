@@ -19,7 +19,7 @@ import org.gradle.internal.impldep.com.google.common.collect.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.qe.configuration.Channels;
+import io.quarkus.qe.model.channels.Channels;
 import io.quarkus.qe.consumers.utils.InMemoryKafkaResource;
 import io.quarkus.qe.consumers.utils.RepositoryEntityUtils;
 import io.quarkus.qe.data.RepositoryEntity;

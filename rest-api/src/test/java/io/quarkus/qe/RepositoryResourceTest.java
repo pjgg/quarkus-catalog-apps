@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.enterprise.inject.Any;
@@ -17,7 +18,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.qe.configuration.Channels;
+import io.quarkus.qe.model.channels.Channels;
 import io.quarkus.qe.data.RepositoryEntity;
 import io.quarkus.qe.model.Repository;
 import io.quarkus.qe.model.requests.NewRepositoryRequest;
@@ -35,7 +36,7 @@ import io.smallrye.reactive.messaging.connectors.InMemorySink;
 @QuarkusTestResource(H2DatabaseTestResource.class)
 public class RepositoryResourceTest {
 
-    private static final long AN_ENTITY_ID = 100;
+    private static final long NOT_FOUND_ENTITY_ID = 777;
     private static final int EXPECTED_ALL_REPOS_AMOUNT = 3;
     private static final String PATH = "/repository";
     private static final String BRANCH = "master";
@@ -43,7 +44,7 @@ public class RepositoryResourceTest {
     private static final String REPO_URL_1 = "http://github.com/user/repo1.git";
     private static final String REPO_URL_2 = "http://github.com/user/repo2.git";
     private static final String EXPECTED_CONFLICT_ERROR_MSG = "Repository " + REPO_URL + " already exist.";
-    private static final String EXPECTED_NOT_FOUND_ERROR_MSG = "Repository ID " + AN_ENTITY_ID + " not exist.";
+    private static final String EXPECTED_NOT_FOUND_ERROR_MSG = "Repository ID " + NOT_FOUND_ENTITY_ID + " not exist.";
 
     @Inject
     @Any
@@ -55,12 +56,14 @@ public class RepositoryResourceTest {
     private NewRepositoryRequest repository;
     private RepositoryEntity entity;
     private Response response;
-    private InMemorySink<NewRepositoryRequest> responses;
+    private InMemorySink<NewRepositoryRequest> newRepositoryResponses;
+    private InMemorySink<Repository> updateRepositoryResponses;
 
     @BeforeEach
     public void setup() {
         repositoryEntityUtils.deleteAll();
-        responses = connector.sink(Channels.NEW_REPOSITORY);
+        newRepositoryResponses = connector.sink(Channels.NEW_REPOSITORY);
+        updateRepositoryResponses = connector.sink(Channels.ENRICH_REPOSITORY);
     }
 
     @Test
@@ -69,6 +72,14 @@ public class RepositoryResourceTest {
         whenAddNewRepository();
         thenResponseIsAccepted();
         thenNewRepositoryRequestIsSent();
+    }
+
+    @Test
+    public void shouldUpdateRepository() throws RepositoryNotFoundException {
+        givenExistingRepository(REPO_URL);
+        whenUpdateRepository(entity.id);
+        thenResponseIsAccepted();
+        thenUpdateRepositoryRequestIsSent();
     }
 
     @Test
@@ -89,9 +100,17 @@ public class RepositoryResourceTest {
     }
 
     @Test
+    public void shouldReturnRepositoryNotFound() throws RepositoryNotFoundException {
+        whenUpdateRepository(NOT_FOUND_ENTITY_ID);
+        thenResponseIsNotFound();
+        thenResponseErrorCodeIs(RepositoryNotFoundException.uniqueServiceErrorId);
+        thenResponseErrorMessageIs(EXPECTED_NOT_FOUND_ERROR_MSG);
+    }
+
+    @Test
     public void shouldGetRepositoryById() {
         givenExistingRepository(REPO_URL);
-        whenGetRepository();
+        whenGetRepository(entity.id);
         thenResponseIsOk();
     }
 
@@ -107,7 +126,7 @@ public class RepositoryResourceTest {
 
     @Test
     public void shouldReturnNotFoundWhenEntityDoesNotExist() {
-        whenGetRepository();
+        whenGetRepository(NOT_FOUND_ENTITY_ID);
         thenResponseIsNotFound();
         thenResponseErrorCodeIs(RepositoryNotFoundException.uniqueServiceErrorId);
         thenResponseErrorMessageIs(EXPECTED_NOT_FOUND_ERROR_MSG);
@@ -128,8 +147,13 @@ public class RepositoryResourceTest {
                 .body(repository).when().post(PATH);
     }
 
-    private void whenGetRepository() {
-        long entityId = Optional.ofNullable(entity).map(e -> e.id).orElse(AN_ENTITY_ID);
+    private void whenUpdateRepository(Long id) throws RepositoryNotFoundException {
+        response = given().contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON).and()
+                .when().put(PATH + "/" + id);
+    }
+
+    private void whenGetRepository(Long defaultEntityId) {
+        long entityId = Optional.ofNullable(entity).map(e -> e.id).orElse(defaultEntityId);
         response = given().accept(MediaType.APPLICATION_JSON).when().get(PATH + "/" + entityId);
     }
 
@@ -139,7 +163,11 @@ public class RepositoryResourceTest {
     }
 
     private void thenNewRepositoryRequestIsSent() {
-        assertEquals(1, responses.received().size());
+        assertEquals(1, newRepositoryResponses.received().size());
+    }
+
+    private void thenUpdateRepositoryRequestIsSent() {
+        assertEquals(1, updateRepositoryResponses.received().size());
     }
 
     private void thenResponseIsAccepted() {
@@ -171,6 +199,7 @@ public class RepositoryResourceTest {
     }
 
     private void thenResponseErrorMessageIs(String expectedMsg) {
-        assertTrue(response.as(CatalogError.class).getMsg().equalsIgnoreCase(expectedMsg));
+        assertEquals(expectedMsg, response.as(CatalogError.class).getMsg());
     }
+
 }

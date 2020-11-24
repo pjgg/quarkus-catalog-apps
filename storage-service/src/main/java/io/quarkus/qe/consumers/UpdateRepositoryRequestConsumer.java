@@ -8,7 +8,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.qe.configuration.Channels;
+import io.quarkus.qe.model.channels.Channels;
 import io.quarkus.qe.data.LogEntity;
 import io.quarkus.qe.data.QuarkusExtensionEntity;
 import io.quarkus.qe.data.RepositoryEntity;
