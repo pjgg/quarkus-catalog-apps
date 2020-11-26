@@ -4,6 +4,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.qe.data.QuarkusVersionEntity;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
 
@@ -18,6 +20,9 @@ import io.quarkus.qe.model.Log;
 import io.quarkus.qe.model.QuarkusExtension;
 import io.quarkus.qe.model.Repository;
 import io.smallrye.reactive.messaging.annotations.Blocking;
+
+import java.util.Optional;
+import java.util.Set;
 
 @ApplicationScoped
 public class UpdateRepositoryRequestConsumer {
@@ -40,6 +45,7 @@ public class UpdateRepositoryRequestConsumer {
         entity.name = repository.getName();
         updateQuarkusExtensions(repository, entity);
         updateLogs(repository, entity);
+        updateVersion(repository, entity);
         entity.persist();
     }
 
@@ -50,6 +56,7 @@ public class UpdateRepositoryRequestConsumer {
                 QuarkusExtensionEntity extensionEntity = new QuarkusExtensionEntity();
                 extensionEntity.repository = entity;
                 extensionEntity.name = extension.getName();
+                extensionEntity.version = extension.getVersion();
                 entity.extensions.add(extensionEntity);
             }
         }
@@ -65,5 +72,20 @@ public class UpdateRepositoryRequestConsumer {
                 entity.logs.add(logEntity);
             }
         }
+    }
+
+    private void updateVersion(Repository repository, RepositoryEntity entity) {
+        Optional.ofNullable(repository.getGlobalVersion()).ifPresent(version -> {
+            PanacheQuery<QuarkusVersionEntity> persistedVersionEntity = QuarkusVersionEntity.find("version",
+                    version.getVersion());
+            entity.quarkusVersion = persistedVersionEntity.firstResult();
+            if (entity.quarkusVersion == null) {
+                QuarkusVersionEntity versionEntity = new QuarkusVersionEntity();
+                versionEntity.version = version.getVersion();
+                versionEntity.repositories = Set.of(entity);
+
+                entity.quarkusVersion = versionEntity;
+            }
+        });
     }
 }

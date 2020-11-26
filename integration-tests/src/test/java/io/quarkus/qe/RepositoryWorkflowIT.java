@@ -19,13 +19,14 @@ public class RepositoryWorkflowIT extends BaseIT {
     private static final String PATH = "/repository";
     private static final String REPO_URL = "https://github.com/quarkus-qe/quarkus-catalog-apps";
     private static final String BRANCH = "main";
+    private static final String EXPECTED_QUARKUS_VERSION = "1.10.0.Final";
 
     @Test
     public void shouldCreateRepositoryAndPopulateRepository() {
         whenCreateNewRepository(REPO_URL);
         thenRepositoryShouldBeCreatedInDatabase(REPO_URL);
 
-        thenRepositoryShouldBeUpdated(REPO_URL, "quarkus-catalog-apps");
+        thenRepositoryShouldBeUpdated(REPO_URL, "quarkus-catalog-apps", EXPECTED_QUARKUS_VERSION);
     }
 
     private void whenCreateNewRepository(String repoUrl) {
@@ -39,10 +40,12 @@ public class RepositoryWorkflowIT extends BaseIT {
         awaitFor(() -> assertTrue(getRepositoryByRepoUrl(expectedRepoUrl).isPresent()));
     }
 
-    private void thenRepositoryShouldBeUpdated(String expectedRepoUrl, String expectedName) {
+    private void thenRepositoryShouldBeUpdated(String expectedRepoUrl, String expectedName, String expectedVersion) {
         awaitFor(() -> {
             Repository actual = getRepositoryByRepoUrl(expectedRepoUrl).get();
             assertEquals(expectedName, actual.getName());
+            assertEquals(expectedVersion, actual.getGlobalVersion().getVersion());
+            assertTrue(!actual.getExtensions().isEmpty());
             assertNotNull(actual.getExtensions());
             assertFalse(actual.getExtensions().isEmpty());
         });

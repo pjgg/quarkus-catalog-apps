@@ -11,6 +11,7 @@ public class QuarkusExtensionMarshaller {
     public QuarkusExtension fromEntity(QuarkusExtensionEntity entity) {
         QuarkusExtension model = new QuarkusExtension();
         model.setName(entity.name);
+        model.setVersion(entity.version);
         return model;
     }
 }

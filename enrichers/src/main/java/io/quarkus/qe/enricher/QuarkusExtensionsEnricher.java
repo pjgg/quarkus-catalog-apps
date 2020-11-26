@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import io.quarkus.qe.model.QuarkusVersion;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -30,6 +33,9 @@ public class QuarkusExtensionsEnricher implements Enricher {
     @Inject
     Instance<RepoUrlToRawService> repoUrlToRawServices;
 
+    @Inject
+    QuarkusVersionResolver quarkusVersionResolver;
+
     @Override
     public String type() {
         return "Quarkus Extensions";
@@ -39,6 +45,7 @@ public class QuarkusExtensionsEnricher implements Enricher {
     public void enrichRepository(Repository repository) throws EnrichmentException {
         String rawUrl = getRawUrlFromRepository(repository);
         repository.setExtensions(findAllDependencies(rawUrl));
+        repository.setGlobalVersion(new QuarkusVersion(quarkusVersionResolver.getOverAllQuarkusVersion(repository)));
     }
 
     protected Model parseMavenModel(String baseUrl) throws EnrichmentException {
@@ -57,13 +64,18 @@ public class QuarkusExtensionsEnricher implements Enricher {
                         repository.getRepoUrl()));
     }
 
-    private Set<QuarkusExtension> findAllDependencies(String baseUrl) throws EnrichmentException {
+    protected Set<QuarkusExtension> findAllDependencies(String baseUrl)
+            throws EnrichmentException {
         Set<QuarkusExtension> extensions = new HashSet<>();
 
         Model model = parseMavenModel(baseUrl);
-        extensions.addAll(model.getDependencies().stream().map(Dependency::getArtifactId)
-                .filter(artifact -> artifact.startsWith(QUARKUS_TAG))
-                .map(this::toQuarkusExtensionModel)
+        quarkusVersionResolver.addAll(model.getProperties());
+        quarkusVersionResolver.addAll(model.getDependencyManagement());
+        quarkusVersionResolver.addAllQuarkusPlugins(model.getBuild());
+
+        extensions.addAll(model.getDependencies().stream()
+                .filter(onlyQuarkusDependencies())
+                .map(e -> toQuarkusExtensionModel(e, quarkusVersionResolver))
                 .collect(Collectors.toList()));
 
         for (String module : model.getModules()) {
@@ -73,10 +85,30 @@ public class QuarkusExtensionsEnricher implements Enricher {
         return extensions;
     }
 
-    private QuarkusExtension toQuarkusExtensionModel(String extension) {
+    private Predicate<Dependency> onlyQuarkusDependencies() {
+        return dependency -> dependency.getArtifactId().startsWith(QUARKUS_TAG);
+    }
+
+    private QuarkusExtension toQuarkusExtensionModel(Dependency extension, QuarkusVersionResolver quarkusVersionResolver) {
+        String version = getDependencyVersion(extension, quarkusVersionResolver);
         QuarkusExtension model = new QuarkusExtension();
-        model.setName(extension);
+        model.setName(extension.getArtifactId());
+        model.setVersion(version);
         return model;
     }
 
+    private String getDependencyVersion(Dependency extension, QuarkusVersionResolver quarkusVersionResolver) {
+        String version = quarkusVersionResolver.extractMavenValue(Optional.ofNullable(extension.getVersion())
+                .orElse(quarkusVersionResolver.getVersionFromArtifactId(extension.getArtifactId())));
+
+        if (version == null && quarkusVersionResolver.containsQuarkusBom()) {
+            version = quarkusVersionResolver.getQuarkusBomVersion();
+        }
+
+        if (version == null && quarkusVersionResolver.containsQuarkusMavenPlugin()) {
+            version = quarkusVersionResolver.getQuarkusPluginMavenVersion();
+        }
+
+        return version;
+    }
 }

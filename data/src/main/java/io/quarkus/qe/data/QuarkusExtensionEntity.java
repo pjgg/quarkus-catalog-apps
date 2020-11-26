@@ -1,11 +1,10 @@
 package io.quarkus.qe.data;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 @Entity(name = "quarkus_extension")
 public class QuarkusExtensionEntity extends PanacheEntity {
@@ -14,6 +13,8 @@ public class QuarkusExtensionEntity extends PanacheEntity {
     public RepositoryEntity repository;
     @Column(nullable = false)
     public String name;
+    @Column
+    public String version;
 
     @Override
     public boolean equals(Object obj) {

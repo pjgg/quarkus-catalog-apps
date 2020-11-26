@@ -16,6 +16,7 @@ public class Repository {
     private String branch;
     private String name;
     private Set<QuarkusExtension> extensions = new HashSet<>();
+    private QuarkusVersion globalVersion;
     private List<Log> logs = new ArrayList<>();
 
     public Long getId() {
@@ -64,6 +65,14 @@ public class Repository {
 
     public void setLogs(List<Log> logs) {
         this.logs = logs;
+    }
+
+    public QuarkusVersion getGlobalVersion() {
+        return globalVersion;
+    }
+
+    public void setGlobalVersion(QuarkusVersion globalVersion) {
+        this.globalVersion = globalVersion;
     }
 
     @Transient
