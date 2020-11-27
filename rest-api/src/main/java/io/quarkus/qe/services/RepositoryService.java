@@ -5,7 +5,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-import io.quarkus.qe.model.channels.Channels;
+import io.quarkus.qe.configuration.Channels;
 import io.quarkus.qe.data.RepositoryEntity;
 import io.quarkus.qe.data.marshallers.RepositoryMarshaller;
 import io.quarkus.qe.exceptions.RepositoryAlreadyExistsException;

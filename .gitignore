@@ -137,3 +137,5 @@ buildNumber.properties
 .classpath
 .settings
 .project
+/deployment/charts/**/requirements.lock
+/deployment/charts/**/charts/

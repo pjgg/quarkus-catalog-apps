@@ -1,4 +1,4 @@
-package io.quarkus.qe.model.channels;
+package io.quarkus.qe.configuration;
 
 public final class Channels {
 

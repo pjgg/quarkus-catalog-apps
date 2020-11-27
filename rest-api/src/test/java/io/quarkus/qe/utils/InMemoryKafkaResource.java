@@ -3,7 +3,7 @@ package io.quarkus.qe.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.quarkus.qe.model.channels.Channels;
+import io.quarkus.qe.configuration.Channels;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import io.smallrye.reactive.messaging.connectors.InMemoryConnector;
 

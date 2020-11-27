@@ -9,7 +9,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
 
-import io.quarkus.qe.model.channels.Channels;
+import io.quarkus.qe.configuration.Channels;
 import io.quarkus.qe.data.RepositoryEntity;
 import io.quarkus.qe.data.marshallers.RepositoryMarshaller;
 import io.quarkus.qe.model.Repository;

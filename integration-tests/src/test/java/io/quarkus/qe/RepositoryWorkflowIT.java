@@ -1,13 +1,11 @@
 package io.quarkus.qe;
 
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import org.apache.http.HttpStatus;
@@ -38,12 +36,11 @@ public class RepositoryWorkflowIT extends BaseIT {
     }
 
     private void thenRepositoryShouldBeCreatedInDatabase(String expectedRepoUrl) {
-        await().atMost(5, TimeUnit.SECONDS)
-                .untilAsserted(() -> assertTrue(getRepositoryByRepoUrl(expectedRepoUrl).isPresent()));
+        awaitFor(() -> assertTrue(getRepositoryByRepoUrl(expectedRepoUrl).isPresent()));
     }
 
     private void thenRepositoryShouldBeUpdated(String expectedRepoUrl, String expectedName) {
-        await().atMost(30, TimeUnit.SECONDS).untilAsserted(() -> {
+        awaitFor(() -> {
             Repository actual = getRepositoryByRepoUrl(expectedRepoUrl).get();
             assertEquals(expectedName, actual.getName());
             assertNotNull(actual.getExtensions());

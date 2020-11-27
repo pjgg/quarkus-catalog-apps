@@ -14,11 +14,11 @@ public class HealthIT extends BaseIT {
 
     @Test
     public void restApiHealthEndpointShouldBeOk() {
-        givenRestApiService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK);
+        awaitFor(() -> givenRestApiService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK));
     }
 
     @Test
     public void enricherServiceHealthEndpointShouldBeOk() {
-        givenEnrichService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK);
+        awaitFor(() -> givenEnrichService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK));
     }
 }

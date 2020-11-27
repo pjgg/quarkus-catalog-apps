@@ -14,12 +14,21 @@
   * [oc](https://docs.openshift.com/enterprise/3.2/cli_reference/manage_cli_profiles.html#manually-configuring-cli-profiles) / kubectl Cli
 
 
-## Helm
+## Helmfile
 
-Move on to your helmfile environment, for example local and then apply your changes:
-> cd /helmfiles/local
+Move on to your desired helmfile and then apply your changes:
+
+> cd /helmfiles/dev
 >
-> helmfile -f helmfile.yaml apply/sync
+> export CATALOG_API_TAG=1.0.0
+>
+> export CATALOG_STORAGE_TAG=1.0.0
+>
+> export CATALOG_ENRICHER_TAG=1.0.0
+> 
+> helmfile -f helmfile.yaml sync
+
+If your don't export a desired tag, `latest` will be used as default tag.
 
 ## Crds 
 
@@ -33,59 +42,8 @@ This project requires the following operators installed:
 * [Kafka Strimzi Operator](https://strimzi.io/)
 
 ### Folder Structure
-```
-.
-├── charts
-│   ├── catalog-enricher-service
-│   │   ├── Chart.yaml
-│   │   ├── templates
-│   │   │   ├── deployment.yaml
-│   │   │   ├── _helpers.tpl
-│   │   │   └── service.yaml
-│   │   └── values.yaml
-│   ├── catalog-rest-api
-│   │   ├── Chart.yaml
-│   │   ├── templates
-│   │   │   ├── deployment.yaml
-│   │   │   ├── _helpers.tpl
-│   │   │   ├── route.yaml
-│   │   │   └── service.yaml
-│   │   └── values.yaml
-│   └── catalog-storage-service
-│       ├── Chart.yaml
-│       ├── templates
-│       │   ├── deployment.yaml
-│       │   ├── _helpers.tpl
-│       │   └── service.yaml
-│       └── values.yaml
-├── crds
-│   ├── dev
-│   │   └── postgresql
-│   │       └── quarkusappcatalog.yaml
-│   ├── local
-│   └── prod
-├── docker
-│   └── docker-compose.yaml
-├── helmfiles
-│   ├── dev
-│   │   └── helmfile.yaml
-│   ├── local
-│   │   ├── helmfile.yaml
-│   │   └── values.yaml
-│   └── prod
-├── README.md
-└── values
-    ├── dev
-    │   ├── catalog-enricher-service
-    │   │   └── values.yaml
-    │   ├── catalog-rest-api
-    │   │   └── values.yaml
-    │   └── catalog-storage-service
-    │       └── values.yaml
-    └── replica-values.yaml
 
-```
-**Chart:** a collection of k8s templates and default values that applies to those templates. Doesn't talk about environment specific values.
+**Chart:** a collection of k8s templates and default values that applies to those parent templates. Doesn't talk about environment specific values.
 
 **helmfiles:** Is a declarative spec for deploying helm charts. Here you have environment specific values. A helmfile could deploy more than one chart, 
 and also DBs, brokers, secrets etc...everything that is required in order to make your service running must be defined in these helmfiles. 

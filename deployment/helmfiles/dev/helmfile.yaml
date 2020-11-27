@@ -1,6 +1,8 @@
 repositories:
   - name: bitnami
     url: https://charts.bitnami.com/bitnami
+  - name: common
+    url: http://quarkus-qe.github.io/helm-charts-parent
 
 charts:
   - name: dev-catalog-rest-api
@@ -8,13 +10,22 @@ charts:
     chart: ../../charts/catalog-rest-api/
     values:
       - ../../values/dev/catalog-rest-api/values.yaml
+    set:
+      - name: "qe-quarkus-app.deployment.image.tag"
+        value: '{{ env "CATALOG_API_TAG" | default "latest" }}'
   - name: dev-catalog-storage-service
     namespace: dev-catalog-app
     chart: ../../charts/catalog-storage-service/
     values:
       - ../../values/dev/catalog-rest-api/values.yaml
+    set:
+      - name: "qe-quarkus-app.deployment.image.tag"
+        value: '{{ env "CATALOG_STORAGE_TAG" | default "latest" }}'
   - name: dev-catalog-enricher-service
     namespace: dev-catalog-app
     chart: ../../charts/catalog-enricher-service/
     values:
       - ../../values/dev/catalog-enricher-service/values.yaml
+    set:
+      - name: "qe-quarkus-app.deployment.image.tag"
+        value: '{{ env "CATALOG_ENRICHER_TAG" | default "latest" }}'

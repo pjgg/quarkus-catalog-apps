@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.qe.model.channels.Channels;
+import io.quarkus.qe.configuration.Channels;
 import io.quarkus.qe.consumers.utils.InMemoryKafkaResource;
 import io.quarkus.qe.data.RepositoryEntity;
 import io.quarkus.qe.model.Repository;

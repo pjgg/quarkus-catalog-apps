@@ -18,7 +18,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.qe.model.channels.Channels;
+import io.quarkus.qe.configuration.Channels;
 import io.quarkus.qe.data.RepositoryEntity;
 import io.quarkus.qe.model.Repository;
 import io.quarkus.qe.model.requests.NewRepositoryRequest;
@@ -110,7 +110,7 @@ public class RepositoryResourceTest {
     @Test
     public void shouldGetRepositoryById() {
         givenExistingRepository(REPO_URL);
-        whenGetRepository(entity.id);
+        whenGetRepository();
         thenResponseIsOk();
     }
 
@@ -126,7 +126,7 @@ public class RepositoryResourceTest {
 
     @Test
     public void shouldReturnNotFoundWhenEntityDoesNotExist() {
-        whenGetRepository(NOT_FOUND_ENTITY_ID);
+        whenGetRepository();
         thenResponseIsNotFound();
         thenResponseErrorCodeIs(RepositoryNotFoundException.uniqueServiceErrorId);
         thenResponseErrorMessageIs(EXPECTED_NOT_FOUND_ERROR_MSG);
@@ -152,8 +152,8 @@ public class RepositoryResourceTest {
                 .when().put(PATH + "/" + id);
     }
 
-    private void whenGetRepository(Long defaultEntityId) {
-        long entityId = Optional.ofNullable(entity).map(e -> e.id).orElse(defaultEntityId);
+    private void whenGetRepository() {
+        long entityId = Optional.ofNullable(entity).map(e -> e.id).orElse(NOT_FOUND_ENTITY_ID);
         response = given().accept(MediaType.APPLICATION_JSON).when().get(PATH + "/" + entityId);
     }
 
