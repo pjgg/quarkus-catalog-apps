@@ -14,9 +14,13 @@ public class Repository {
     private String repoUrl;
     @NotEmpty
     private String branch;
+    private String createdAt;
+    private String updatedAt;
+    private String status;
     private String name;
     private Set<QuarkusExtension> extensions = new HashSet<>();
     private QuarkusVersion globalVersion;
+    private Set<String> labels = new HashSet<>();
     private List<Log> logs = new ArrayList<>();
 
     public Long getId() {
@@ -51,6 +55,30 @@ public class Repository {
         this.branch = branch;
     }
 
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Set<QuarkusExtension> getExtensions() {
         return extensions;
     }
@@ -73,6 +101,14 @@ public class Repository {
 
     public void setGlobalVersion(QuarkusVersion globalVersion) {
         this.globalVersion = globalVersion;
+    }
+
+    public Set<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(Set<String> labels) {
+        this.labels = labels;
     }
 
     @Transient

@@ -2,6 +2,7 @@ package io.quarkus.qe.consumers;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
+
 import org.gradle.internal.impldep.com.google.common.collect.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,7 @@ import io.quarkus.qe.configuration.Channels;
 import io.quarkus.qe.consumers.utils.InMemoryKafkaResource;
 import io.quarkus.qe.consumers.utils.RepositoryEntityUtils;
 import io.quarkus.qe.data.RepositoryEntity;
+import io.quarkus.qe.data.RepositoryStatus;
 import io.quarkus.qe.data.marshallers.LogMarshaller;
 import io.quarkus.qe.data.marshallers.RepositoryMarshaller;
 import io.quarkus.qe.model.Log;
@@ -67,10 +70,11 @@ public class UpdateRepositoryRequestConsumerTest {
     }
 
     @Test
-    public void shouldUpdateRepositoryName() {
+    public void shouldUpdateRepository() {
         givenRepositoryRequestWithName(NEW_NAME);
         whenSendUpdate();
         thenNewNameIsStored();
+        thenMetadataFieldsAreUpdated();
     }
 
     @Test
@@ -134,6 +138,13 @@ public class UpdateRepositoryRequestConsumerTest {
 
     private void whenSendUpdate() {
         requests.send(repository);
+    }
+
+    private void thenMetadataFieldsAreUpdated() {
+        thenAssertRepositoryEntity(entity -> {
+            assertEquals(RepositoryStatus.COMPLETED, entity.status);
+            assertNotNull(entity.updatedAt);
+        });
     }
 
     private void thenNewNameIsStored() {

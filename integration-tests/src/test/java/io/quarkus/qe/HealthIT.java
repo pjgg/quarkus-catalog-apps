@@ -9,7 +9,7 @@ public class HealthIT extends BaseIT {
 
     @Test
     public void storageServiceHealthEndpointShouldBeOk() {
-        givenStorageService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK);
+        awaitFor(() -> givenStorageService().get(HEALTH_PATH).then().statusCode(HttpStatus.SC_OK));
     }
 
     @Test

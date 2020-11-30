@@ -11,12 +11,7 @@ import static java.util.Arrays.asList;
 
 import static java.util.Collections.emptyList;
 
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,6 +49,7 @@ public class QuarkusExtensionsEnricherTest {
     public void setup() {
         enricher = spy(new QuarkusExtensionsEnricher());
         enricher.repoUrlToRawServices = mock(Instance.class);
+        enricher.quarkusVersionResolver = mock(QuarkusVersionResolver.class);
         when(enricher.repoUrlToRawServices.stream()).thenReturn(asList(rawUrlService).stream());
 
         repository = new Repository();
@@ -62,7 +58,7 @@ public class QuarkusExtensionsEnricherTest {
     }
 
     @Test
-    public void shouldRaiseEnrichExceptionIfNotSupported() throws EnrichmentException {
+    public void shouldRaiseEnrichExceptionIfNotSupported() {
         givenRepositoryIsNotSupported();
         Assertions.assertThrows(EnrichmentException.class, this::whenEnrichRepository);
     }

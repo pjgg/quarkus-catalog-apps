@@ -2,18 +2,22 @@ package io.quarkus.qe.consumers;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.qe.configuration.Channels;
 import io.quarkus.qe.consumers.utils.InMemoryKafkaResource;
 import io.quarkus.qe.data.RepositoryEntity;
+import io.quarkus.qe.data.RepositoryStatus;
 import io.quarkus.qe.model.Repository;
 import io.quarkus.qe.model.requests.NewRepositoryRequest;
 import io.quarkus.test.common.QuarkusTestResource;
@@ -30,6 +34,7 @@ public class NewRepositoryRequestConsumerTest {
 
     private static final String REPO_URL = "http://github.com/user/repo.git";
     private static final String BRANCH = "master";
+    private static final String LABEL = "aLabel";
 
     @Inject
     @Any
@@ -57,6 +62,7 @@ public class NewRepositoryRequestConsumerTest {
         repository = new NewRepositoryRequest();
         repository.setBranch(BRANCH);
         repository.setRepoUrl(repoUrl);
+        repository.setLabels(Arrays.asList(LABEL));
     }
 
     private void whenSendNewRequest() {
@@ -67,7 +73,13 @@ public class NewRepositoryRequestConsumerTest {
         List<RepositoryEntity> entities = RepositoryEntity.find("repoUrl", REPO_URL).list();
 
         assertEquals(1, entities.size());
-        assertEquals(BRANCH, entities.get(0).branch);
+
+        RepositoryEntity actualEntity = entities.get(0);
+        assertEquals(BRANCH, actualEntity.branch);
+        assertEquals(1, actualEntity.labels.size());
+        assertEquals(LABEL, actualEntity.labels.iterator().next().name);
+        assertEquals(RepositoryStatus.PENDING, actualEntity.status);
+        assertNotNull(actualEntity.createdAt);
     }
 
     private void thenResponseIsSent() {

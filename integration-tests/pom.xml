@@ -96,9 +96,9 @@
                 </executions>
                 <configuration>
                     <systemPropertyVariables>
-                        <container.image.storage-service>quarkus-qe/quarkus-apps-catalog-storage-service:${project.version}</container.image.storage-service>
-                        <container.image.enricher>quarkus-qe/quarkus-apps-catalog-enricher:${project.version}</container.image.enricher>
-                        <container.image.rest-api>quarkus-qe/quarkus-apps-catalog-rest-api:${project.version}</container.image.rest-api>
+                        <container.image.storage-service>${quarkus.container-image.group}/quarkus-apps-catalog-storage-service:${project.version}</container.image.storage-service>
+                        <container.image.enricher>${quarkus.container-image.group}/quarkus-apps-catalog-enricher:${project.version}</container.image.enricher>
+                        <container.image.rest-api>${quarkus.container-image.group}/quarkus-apps-catalog-rest-api:${project.version}</container.image.rest-api>
                     </systemPropertyVariables>
                     <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                 </configuration>

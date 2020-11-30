@@ -1,0 +1,25 @@
+name: "Push Images"
+on:
+  - workflow_dispatch
+  - release
+jobs:
+  build:
+    name: JVM build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Build
+        run: |
+          mvn -V -B clean verify
+      - name: Push Images
+        run: |
+          mvn -V -B clean verify -DskipTests=true -DskipITs=true -Dquarkus.container-image.push=true -Dquarkus.container-image.registry=${{ secrets.CONTAINER_REGISTRY }} -Dquarkus.container-image.username=${{ secrets.CONTAINER_REGISTRY_USERNAME }} -Dquarkus.container-image.password=${{ secrets.CONTAINER_REGISTRY_PASSWORD }} -Dquarkus.container-image.group=${{ secrets.CONTAINER_REGISTRY_GROUP }}

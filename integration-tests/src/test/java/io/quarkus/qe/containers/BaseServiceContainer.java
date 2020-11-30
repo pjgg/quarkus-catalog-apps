@@ -34,7 +34,14 @@ public abstract class BaseServiceContainer extends GenericContainer<BaseServiceC
         return getMappedPort(port);
     }
 
+    @Override
+    public void start() {
+        super.start();
+
+        followOutput(new Slf4jLogConsumer(LOGGER));
+    }
+
     private static final String getDefaultImageValue(String name) {
-        return String.format("quarkus-qe/quarkus-apps-catalog-%s:1.0.1-SNAPSHOT", name);
+        return String.format("quarkus-qe/quarkus-apps-catalog-%s:1.0.2-SNAPSHOT", name);
     }
 }

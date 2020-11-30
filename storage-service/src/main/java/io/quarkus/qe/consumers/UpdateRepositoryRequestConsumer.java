@@ -1,5 +1,7 @@
 package io.quarkus.qe.consumers;
 
+import java.time.LocalDateTime;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -14,6 +16,7 @@ import io.quarkus.qe.configuration.Channels;
 import io.quarkus.qe.data.LogEntity;
 import io.quarkus.qe.data.QuarkusExtensionEntity;
 import io.quarkus.qe.data.RepositoryEntity;
+import io.quarkus.qe.data.RepositoryStatus;
 import io.quarkus.qe.data.marshallers.LogMarshaller;
 import io.quarkus.qe.data.marshallers.QuarkusExtensionMarshaller;
 import io.quarkus.qe.model.Log;
@@ -43,6 +46,8 @@ public class UpdateRepositoryRequestConsumer {
 
         RepositoryEntity entity = RepositoryEntity.findById(repository.getId());
         entity.name = repository.getName();
+        entity.updatedAt = LocalDateTime.now();
+        entity.status = RepositoryStatus.COMPLETED;
         updateQuarkusExtensions(repository, entity);
         updateLogs(repository, entity);
         updateVersion(repository, entity);

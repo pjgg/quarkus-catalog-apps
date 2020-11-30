@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 
+import io.quarkus.qe.data.LabelEntity;
 import io.quarkus.qe.data.LogEntity;
 import io.quarkus.qe.data.QuarkusExtensionEntity;
 import io.quarkus.qe.data.RepositoryEntity;
@@ -16,6 +18,7 @@ public class RepositoryEntityUtils {
 
     @Transactional
     public void deleteAll() {
+        LabelEntity.deleteAll();
         QuarkusExtensionEntity.deleteAll();
         LogEntity.deleteAll();
         RepositoryEntity.deleteAll();
