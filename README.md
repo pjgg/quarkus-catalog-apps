@@ -244,6 +244,7 @@ git push
 Once the commit is merged.
 
 4. Close milestone in GitHub: This will generate the release, push the released images into the container registry and update the release notes.
+5. Deploy release vX.Y.Z into OpenShift using [this jenkins job](https://quarkus-qe-jenkins.rhev-ci-vms.eng.rdu2.redhat.com/job/quarkus-apps-catalog-promote/)
 
 ## Useful Links
 

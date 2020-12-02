@@ -1,7 +1,5 @@
 package io.quarkus.qe.model;
 
-import java.util.Objects;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 
 public class QuarkusExtension {

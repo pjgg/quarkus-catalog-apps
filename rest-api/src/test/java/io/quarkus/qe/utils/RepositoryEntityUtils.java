@@ -1,7 +1,9 @@
 package io.quarkus.qe.utils;
 
+import io.quarkus.qe.data.QuarkusVersionEntity;
 import java.util.Set;
 
+import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 
@@ -22,9 +24,19 @@ public class RepositoryEntityUtils {
         RepositoryEntity entity = new RepositoryEntity();
         entity.repoUrl = repoUrl;
         entity.branch = branch;
+        entity.quarkusVersion = createVersionEntity(System.currentTimeMillis() + ".version");
         entity.persist();
 
         return entity;
+    }
+
+    @Transactional
+    public QuarkusVersionEntity createVersionEntity(String version) {
+        QuarkusVersionEntity versionEntity = new QuarkusVersionEntity();
+        versionEntity.id = version;
+        versionEntity.persist();
+
+        return versionEntity;
     }
 
     @Transactional
@@ -36,6 +48,7 @@ public class RepositoryEntityUtils {
             QuarkusExtensionEntity extensionEntity = new QuarkusExtensionEntity();
             extensionEntity.repository = entity;
             extensionEntity.name = extensionName;
+            extensionEntity.version = entity.quarkusVersion;
 
             entity.extensions.add(extensionEntity);
         }

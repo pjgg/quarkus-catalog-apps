@@ -54,7 +54,7 @@ public class RepositoryWorkflowIT extends BaseIT {
         awaitFor(() -> {
             Repository actual = getRepositoryByRepoUrl(expectedRepoUrl).get();
             assertEquals(expectedName, actual.getName());
-            assertEquals(expectedVersion, actual.getGlobalVersion().getVersion());
+            assertEquals(expectedVersion, actual.getQuarkusVersion().getVersion());
             assertTrue(!actual.getExtensions().isEmpty());
             // https://github.com/quarkus-qe/quarkus-catalog-apps/issues/20
             // assertEquals(expectedName, actual.getName());

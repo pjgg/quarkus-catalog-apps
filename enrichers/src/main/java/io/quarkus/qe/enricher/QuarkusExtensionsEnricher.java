@@ -33,9 +33,6 @@ public class QuarkusExtensionsEnricher implements Enricher {
     @Inject
     Instance<RepoUrlToRawService> repoUrlToRawServices;
 
-    @Inject
-    QuarkusVersionResolver quarkusVersionResolver;
-
     @Override
     public String type() {
         return "Quarkus Extensions";
@@ -43,9 +40,10 @@ public class QuarkusExtensionsEnricher implements Enricher {
 
     @Override
     public void enrichRepository(Repository repository) throws EnrichmentException {
+        QuarkusVersionResolver quarkusVersionResolver = new QuarkusVersionResolver();
         String rawUrl = getRawUrlFromRepository(repository);
-        repository.setExtensions(findAllDependencies(rawUrl));
-        repository.setGlobalVersion(new QuarkusVersion(quarkusVersionResolver.getOverAllQuarkusVersion(repository)));
+        repository.setExtensions(findAllDependencies(rawUrl, quarkusVersionResolver));
+        repository.setQuarkusVersion(new QuarkusVersion(quarkusVersionResolver.getOverAllQuarkusVersion(repository)));
     }
 
     protected Model parseMavenModel(String baseUrl) throws EnrichmentException {
@@ -64,7 +62,7 @@ public class QuarkusExtensionsEnricher implements Enricher {
                         repository.getRepoUrl()));
     }
 
-    protected Set<QuarkusExtension> findAllDependencies(String baseUrl)
+    protected Set<QuarkusExtension> findAllDependencies(String baseUrl, QuarkusVersionResolver quarkusVersionResolver)
             throws EnrichmentException {
         Set<QuarkusExtension> extensions = new HashSet<>();
 
@@ -79,7 +77,7 @@ public class QuarkusExtensionsEnricher implements Enricher {
                 .collect(Collectors.toList()));
 
         for (String module : model.getModules()) {
-            extensions.addAll(findAllDependencies(baseUrl + "/" + module));
+            extensions.addAll(findAllDependencies(baseUrl + "/" + module, quarkusVersionResolver));
         }
 
         return extensions;

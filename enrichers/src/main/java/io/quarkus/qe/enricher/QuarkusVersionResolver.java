@@ -1,15 +1,24 @@
 package io.quarkus.qe.enricher;
 
 import io.quarkus.qe.model.Repository;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
-import javax.enterprise.context.ApplicationScoped;
-import org.apache.maven.model.*;
 
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.maven.model.Build;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.DependencyManagement;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginManagement;
 
-@ApplicationScoped
 public class QuarkusVersionResolver {
 
     private static final String QUARKUS_LABEL = "quarkus";
@@ -96,7 +105,8 @@ public class QuarkusVersionResolver {
 
     private String mostPopularQuarkusExtVersion(Repository repository) {
         Map<String, Long> occurrences = repository.getExtensions().stream()
-                .collect(Collectors.groupingBy(dependency -> dependency.getVersion(), Collectors.counting()));
+                .collect(Collectors.groupingBy(dependency -> Optional.ofNullable(dependency.getVersion()).orElse(EMPTY),
+                        Collectors.counting()));
 
         return Collections.max(occurrences.entrySet(), Comparator.comparingLong(item -> item.getValue())).getKey();
     }

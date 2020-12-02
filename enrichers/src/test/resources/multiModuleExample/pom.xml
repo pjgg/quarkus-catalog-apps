@@ -17,7 +17,6 @@
         <module>storage-service</module>
         <module>enrichers</module>
         <module>rest-api</module>
-        <module>integration-tests</module>
     </modules>
 
     <properties>

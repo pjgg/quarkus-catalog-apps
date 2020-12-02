@@ -101,6 +101,7 @@ public class FindAllDependenciesTest {
 
     private Set<QuarkusExtension> getQuarkusExtensions(String relativePath) throws EnrichmentException {
         URL pomFile = getClass().getClassLoader().getResource(relativePath);
-        return enricher.findAllDependencies("file:///" + pomFile.getFile());
+        QuarkusVersionResolver quarkusVersionResolver = new QuarkusVersionResolver();
+        return enricher.findAllDependencies("file:///" + pomFile.getFile(), quarkusVersionResolver);
     }
 }

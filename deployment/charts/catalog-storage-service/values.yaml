@@ -16,7 +16,7 @@ qe-quarkus-app:
       - name: QUARKUS_DATASOURCE_USERNAME
         value: root
       - name: QUARKUS_DATASOURCE_PASSWORD
-        value: root
+        value: EWQNNZC
       - name: QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT-SCHEMA
         value: quarkusappcatalog
       - name: KAFKA_BOOTSTRAP_SERVERS

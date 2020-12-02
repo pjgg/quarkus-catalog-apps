@@ -32,7 +32,7 @@ public class RepositoryEntity extends PanacheEntity {
     public Set<LabelEntity> labels;
     @OneToMany(mappedBy = "repository", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     public List<LogEntity> logs;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "quarkus_version_id")
     public QuarkusVersionEntity quarkusVersion;
 }

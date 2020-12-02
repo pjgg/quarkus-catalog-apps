@@ -13,8 +13,9 @@ public class QuarkusExtensionEntity extends PanacheEntity {
     public RepositoryEntity repository;
     @Column(nullable = false)
     public String name;
-    @Column
-    public String version;
+    @ManyToOne
+    @JoinColumn(name = "quarkus_version_id")
+    public QuarkusVersionEntity version;
 
     @Override
     public boolean equals(Object obj) {

@@ -19,7 +19,7 @@ public class Repository {
     private String status;
     private String name;
     private Set<QuarkusExtension> extensions = new HashSet<>();
-    private QuarkusVersion globalVersion;
+    private QuarkusVersion quarkusVersion;
     private Set<String> labels = new HashSet<>();
     private List<Log> logs = new ArrayList<>();
 
@@ -95,12 +95,12 @@ public class Repository {
         this.logs = logs;
     }
 
-    public QuarkusVersion getGlobalVersion() {
-        return globalVersion;
+    public QuarkusVersion getQuarkusVersion() {
+        return quarkusVersion;
     }
 
-    public void setGlobalVersion(QuarkusVersion globalVersion) {
-        this.globalVersion = globalVersion;
+    public void setQuarkusVersion(QuarkusVersion quarkusVersion) {
+        this.quarkusVersion = quarkusVersion;
     }
 
     public Set<String> getLabels() {

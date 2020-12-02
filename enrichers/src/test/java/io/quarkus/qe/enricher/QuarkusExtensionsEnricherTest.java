@@ -49,7 +49,6 @@ public class QuarkusExtensionsEnricherTest {
     public void setup() {
         enricher = spy(new QuarkusExtensionsEnricher());
         enricher.repoUrlToRawServices = mock(Instance.class);
-        enricher.quarkusVersionResolver = mock(QuarkusVersionResolver.class);
         when(enricher.repoUrlToRawServices.stream()).thenReturn(asList(rawUrlService).stream());
 
         repository = new Repository();

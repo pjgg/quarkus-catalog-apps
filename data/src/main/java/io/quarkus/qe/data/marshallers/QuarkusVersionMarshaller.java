@@ -9,7 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 public class QuarkusVersionMarshaller {
     public QuarkusVersion fromEntity(QuarkusVersionEntity entity) {
         QuarkusVersion model = new QuarkusVersion();
-        model.setVersion(entity.version);
+        model.setVersion(entity.id);
         return model;
     }
 }

@@ -31,7 +31,7 @@ public class RepositoryMarshaller {
         model.setCreatedAt(formatDate(entity.createdAt));
         model.setUpdatedAt(formatDate(entity.updatedAt));
         Optional.ofNullable(entity.quarkusVersion)
-                .ifPresent(version -> model.setGlobalVersion(quarkusVersionMarshaller.fromEntity(version)));
+                .ifPresent(version -> model.setQuarkusVersion(quarkusVersionMarshaller.fromEntity(version)));
 
         if (entity.status != null) {
             model.setStatus(entity.status.name());

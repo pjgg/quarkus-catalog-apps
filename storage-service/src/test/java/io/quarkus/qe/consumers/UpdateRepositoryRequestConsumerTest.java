@@ -121,6 +121,7 @@ public class UpdateRepositoryRequestConsumerTest {
         Stream.of(extensions).map(name -> {
             QuarkusExtension model = new QuarkusExtension();
             model.setName(name);
+            model.setVersion(entity.quarkusVersion.id);
             return model;
         }).forEach(repository.getExtensions()::add);
     }
