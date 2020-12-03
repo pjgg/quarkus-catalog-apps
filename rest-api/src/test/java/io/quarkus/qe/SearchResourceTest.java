@@ -53,6 +53,20 @@ public class SearchResourceTest {
     }
 
     @Test
+    public void testRepositoriesQueryFilterByQuarkusVersion() {
+        givenExistingRepository();
+        whenRunGraphqlRepositoriesQuery();
+        thenRepositoryIsFound();
+    }
+
+    @Test
+    public void testRepositoriesQueryShouldReturnEmpty() {
+        givenExistingRepository();
+        whenRunGraphqlRepositoriesQuery("version-not-found");
+        thenRepositoryIsNotFound();
+    }
+
+    @Test
     public void testRepositoryByIdQuery() {
         givenExistingRepository();
         whenRunGraphqlRepositoryByIdQuery();
@@ -67,6 +81,20 @@ public class SearchResourceTest {
     }
 
     @Test
+    public void testRepositoriesByExtensionsArtifactIdQuery() {
+        givenExistingRepositoryWithExtensions("quarkus-a", "quarkus-b");
+        whenRunGraphqlRepositoriesByExtensionsArtifactIdQuery("quarkus-b");
+        thenRepositoryIsFound();
+    }
+
+    @Test
+    public void testRepositoriesByExtensionsArtifactIdQueryShouldReturnEmpty() {
+        givenExistingRepositoryWithExtensions("quarkus-a", "quarkus-b");
+        whenRunGraphqlRepositoriesByExtensionsArtifactIdQuery("quarkus-not-found");
+        thenRepositoryIsNotFound();
+    }
+
+    @Test
     public void testRepositoriesByExtensionsQuery() {
         givenExistingRepositoryWithExtensions("quarkus-a", "quarkus-b");
         whenRunGraphqlRepositoriesByExtensionsQuery("quarkus-b");
@@ -76,7 +104,7 @@ public class SearchResourceTest {
     @Test
     public void testRepositoriesByExtensionsQueryShouldReturnEmpty() {
         givenExistingRepositoryWithExtensions("quarkus-a", "quarkus-b");
-        whenRunGraphqlRepositoriesByExtensionsQuery("quarkus-notfound");
+        whenRunGraphqlRepositoriesByExtensionsQuery("quarkus-not-found");
         thenRepositoryIsNotFound();
     }
 
@@ -90,10 +118,23 @@ public class SearchResourceTest {
     }
 
     private void whenRunGraphqlRepositoriesByExtensionsQuery(String... list) {
-        String extensions = Arrays.asList(list).stream().map(item -> "\"" + item + "\"").collect(Collectors.joining(","));
+        String extensions = Arrays.asList(list).stream()
+                .map(item -> "{name:\"" + item + "\", version: \"" + entity.quarkusVersion.id + "\"}")
+                .collect(Collectors.joining(","));
 
         whenRunGraphqlQuery(getPayload("{\n" +
                 "  repositoriesByExtensions (extensions: [" + extensions + "]) {\n" +
+                "    id\n" +
+                "  }\n" +
+                "}"));
+
+    }
+
+    private void whenRunGraphqlRepositoriesByExtensionsArtifactIdQuery(String... list) {
+        String extensions = Arrays.asList(list).stream().map(item -> "\"" + item + "\"").collect(Collectors.joining(","));
+
+        whenRunGraphqlQuery(getPayload("{\n" +
+                "  repositoriesByExtensionsArtifactIds (artifactIds: [" + extensions + "]) {\n" +
                 "    id\n" +
                 "  }\n" +
                 "}"));
@@ -119,8 +160,19 @@ public class SearchResourceTest {
     }
 
     private void whenRunGraphqlRepositoriesQuery() {
+        whenRunGraphqlRepositoriesQuery(entity.quarkusVersion.id);
+    }
+
+    private void whenRunGraphqlRepositoriesQuery(String... quarkusVersion) {
+        String versions = Arrays.asList(quarkusVersion).stream().map(item -> "\"" + item + "\"")
+                .collect(Collectors.joining(","));
+        String filter = "";
+        if (!versions.isEmpty()) {
+            filter = "(quarkusVersions:[" + versions + "])";
+        }
+
         whenRunGraphqlQuery(getPayload("{\n" +
-                "  repositories {\n" +
+                "  repositories " + filter + " {\n" +
                 "    id\n" +
                 "  }\n" +
                 "}"));

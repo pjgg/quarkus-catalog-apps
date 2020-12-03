@@ -98,7 +98,7 @@ And it should return:
 
 When running the REST API service, it also runs a GraphQL endpoint at `/graphql-ui` (in production mode).
 
-At the moment, there are four queries:
+At the moment, there are five queries:
 
 - repositories:
 
@@ -108,9 +108,11 @@ At the moment, there are four queries:
     id
     repoUrl
     name
+    quarkusVersion
     branch
     extensions {
       name
+      version
     }
     labels
     createdAt
@@ -118,6 +120,22 @@ At the moment, there are four queries:
     status
    }
 }
+
+// It's also possible filter by quarkus version:
+{
+ repositories(quarkusVersions:["999-SNAPSHOT", "1.10.2.Final"]) {
+    id
+    repoUrl
+    name
+    quarkusVersion
+    branch
+    labels
+    createdAt
+    updatedAt
+    status
+ }
+}
+
 ```
 
 - by repository URL:
@@ -131,6 +149,7 @@ At the moment, there are four queries:
     branch
     extensions {
       name
+      version
     }
     labels
     createdAt
@@ -151,6 +170,7 @@ At the moment, there are four queries:
     branch
     extensions {
       name
+      version
     }
     labels
     createdAt
@@ -164,16 +184,35 @@ At the moment, there are four queries:
 
 ```
 {
-   repositoriesByExtensions (extensions: ["quarkus-json", "quarkus-rest"]) {
+  repositoriesByExtensions(extensions: [{name: "quarkus-grpc", version: "1.10.2.Final"}]) {
     id
     repoUrl
     name
+    quarkusVersion
     branch
     labels
     createdAt
     updatedAt
     status
-   }
+  }
+}
+```
+
+- repositories that use any of a list of artifactIds:
+
+```
+{
+  repositoriesByExtensionsArtifactIds(artifactIds: ["quarkus-grpc", "quarkus-jdbc-h2"]) {
+    id
+    repoUrl
+    name
+    quarkusVersion
+    branch
+    labels
+    createdAt
+    updatedAt
+    status
+  }
 }
 ```
 
