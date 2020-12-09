@@ -3,7 +3,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 qe-quarkus-app:
-  replicaCount: 1
+  autoscaler:
+    minReplicas: 1
+    maxReplicas: 1
   deployment:
     name: catalog-enricher-api
     image:
@@ -26,10 +28,10 @@ qe-quarkus-app:
     type: ClusterIP
     externalPort: 8083
     internalPort: 8083
-  database:
-    url: jdbc:postgresql://dev-quarkusappcatalog.postgresql-qe-infra:5432/quarkusappcatalog
-    user: root
-    pwd: EWQNNZC
-    schema: quarkusappcatalog
-  kafka:
-    bootstrap: dev-kafka-qe-kafka-bootstrap.kafka-qe-infra:9092
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+    requests:
+      cpu: "150m"
+      memory: "175Mi"

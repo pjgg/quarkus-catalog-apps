@@ -3,7 +3,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 qe-quarkus-app:
-  replicaCount: 1
+  autoscaler:
+    minReplicas: 1
+    maxReplicas: 3
   deployment:
     name: catalog-rest-api
     image:
@@ -27,3 +29,10 @@ qe-quarkus-app:
     type: ClusterIP
     externalPort: 8081
     internalPort: 8081
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "500Mi"
+    requests:
+      cpu: "150m"
+      memory: "175Mi"

@@ -4,5 +4,5 @@ name: catalog-storage-service
 version: 0.0.2
 dependencies:
   - name: qe-quarkus-app
-    version: 0.0.1
+    version: 0.0.2
     repository: http://quarkus-qe.github.io/helm-charts-parent
