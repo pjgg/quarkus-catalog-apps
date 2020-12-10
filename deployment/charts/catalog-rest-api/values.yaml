@@ -5,7 +5,7 @@
 qe-quarkus-app:
   autoscaler:
     minReplicas: 1
-    maxReplicas: 3
+    maxReplicas: 1
   deployment:
     name: catalog-rest-api
     image:
